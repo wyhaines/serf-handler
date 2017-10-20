@@ -31,6 +31,7 @@ module Serf
         type, name, order = *args
       end
 
+      type = :event if type == :user
       type ||= :query
       name ||= nil
       order ||= 0
@@ -61,9 +62,10 @@ module Serf
         sources = []
         sources << ENV['SERF_HANDLER_CONFIG'] if ENV['SERF_HANDLER_CONFIG']
         sources << File.join(Dir.pwd,'.serf-handler','config.rb')
-        sources << File.join( ENV['HOME'], '.serf-handler', 'config.rb' )
-        source = sources.select {|s| FileTest.exist?( s )}.first
-        require File.expand_path( source ) if source
+        sources << File.join(Dir.home, '.serf-handler', 'config.rb') if Dir.home rescue nil
+        sources << '/etc/serf/handlers/.serf-handler/config.rb'
+        source = sources.select {|s| FileTest.exist?(s)}.first
+        require File.expand_path(source) if source
       end
 
       def run_tasks

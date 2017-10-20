@@ -6,8 +6,11 @@ describe "Expects a hash code in the payload which will be queried using",
          "matching repositories."
 
 on :event, 'git-index-deploy' do |event|
-  `git-index -q #{event.payload}`.split(/\n/).each do |match|
+  user = `whoami` # Serf's executable environments are stripped of even basic information like HOME
+  dir = `eval echo "~#{user}"`.strip
+  `git-index -d #{dir}/.git-index.db -q #{event.payload}`.split(/\n/).each do |match|
     hash,path = match.split(/:\s+/)
+    puts "cd #{path} && git fetch --all && git pull"
     system("cd #{path} && git fetch --all && git pull")
   end
 end
