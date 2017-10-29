@@ -46,12 +46,19 @@ class Serf::HandlerTest < Minitest::Test
     assert_equal( event.name, 'test' )
     assert_equal( event.payload, 'arg' )
 
-    ENV['SERF_EVENT'] = 'event'
+    ENV['SERF_EVENT'] = 'query'
     ENV['SERF_QUERY_NAME'] = 'test2'
     event = Serf::Handler::Event.new( { :payload => 'arg2' } )
-    assert_equal( event.type, :event )
+    assert_equal( event.type, :query )
     assert_equal( event.name, 'test2' )
     assert_equal( event.payload, 'arg2' )
+
+    ENV['SERF_EVENT'] = 'event'
+    ENV['SERF_USER_EVENT'] = 'test3'
+    event = Serf::Handler::Event.new( { :payload => 'arg3' } )
+    assert_equal( event.type, :event )
+    assert_equal( event.name, 'test3' )
+    assert_equal( event.payload, 'arg3' )
   end
 
   def test_list_handlers
