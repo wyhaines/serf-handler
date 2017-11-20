@@ -62,7 +62,8 @@ module Serf
         sources = []
         sources << ENV['SERF_HANDLER_CONFIG'] if ENV['SERF_HANDLER_CONFIG']
         sources += find_serf_handler_directories
-        source = sources.select {|s| FileTest.exist?(File.join(s, 'config.rb'))}.first
+        source = sources.collect {|s| File.join(s, 'config.rb')}.
+                         select {|s| FileTest.exist?(s)}.first
         require File.expand_path(source) if source
       end
 
