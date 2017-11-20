@@ -61,11 +61,17 @@ module Serf
       def load_tasks
         sources = []
         sources << ENV['SERF_HANDLER_CONFIG'] if ENV['SERF_HANDLER_CONFIG']
-        sources << File.join(Dir.pwd,'.serf-handler','config.rb')
-        sources << File.join(Dir.home, '.serf-handler', 'config.rb') if Dir.home rescue nil
-        sources << '/etc/serf/handlers/.serf-handler/config.rb'
-        source = sources.select {|s| FileTest.exist?(s)}.first
+        sources += find_serf_handler_directories
+        source = sources.select {|s| FileTest.exist?(File.join(s, 'config.rb'))}.first
         require File.expand_path(source) if source
+      end
+
+      def find_serf_handler_directories
+        sources = []
+        sources << File.join(Dir.pwd,'.serf-handler')
+        sources << File.join(Dir.home, '.serf-handler') if Dir.home rescue nil
+        sources << '/etc/serf/handlers/.serf-handler'
+        sources.select {|s| FileTest.exist?(s)}
       end
 
       def run_tasks
