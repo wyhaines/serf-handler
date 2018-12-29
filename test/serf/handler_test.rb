@@ -69,7 +69,7 @@ class Serf::HandlerTest < Minitest::Test
     # query: mpstat
     # query: ping
     result = `#{EXEC} -I lib test/serf/test-handler.rb -t query -n list-handlers -p ''`
-    %w( list-handlers describe-handler load-average df mpstat ping ).each do |n|
+    %w( list-handlers describe-handler ).each do |n|
       assert_match( /#{n}/m, result )
     end
   end
